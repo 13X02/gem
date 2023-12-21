@@ -16,6 +16,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@google/generative-ai": "^0.1.3",
     "@nextui-org/react": "^2.2.9",
+    "axios": "^1.6.2",
     "fortawesome": "^0.0.1-security",
     "framer-motion": "^10.16.16",
     "js-cookie": "^3.0.5",
