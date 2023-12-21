@@ -17,6 +17,11 @@ import { ChakraProvider, Avatar } from "@chakra-ui/react";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Spinner } from "@chakra-ui/react";
+import bg from '../assets/bg_img.jpg';
+import {  Montserrat, Poppins } from 'next/font/google'
+
+const montserrat = Montserrat({weight: "600", style: "normal", subsets: ['latin']})
+const poppins = Poppins({weight: "300", style: "normal", subsets: ['latin']})
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +53,7 @@ export default function Home() {
   };
 
   const handleSendMessage = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     if (inputMessage.trim() === "") {
       return;
     }
@@ -73,7 +78,7 @@ export default function Home() {
 
       if (response.status === 200) {
         const responseData = response.data;
-        setIsLoading(false); 
+        setIsLoading(false);
         setMessages([
           ...messages,
           { text: inputMessage, type: "start" },
@@ -139,59 +144,74 @@ export default function Home() {
           </Modal>
 
           {/* Chat UI */}
-          <div className="flex bg-white-800 w-full flex-col h-screen">
-            {/* Fixed Heading */}
-            <div className="w-full p-10 flex flex-col items-center">
-              <p className="text-8xl font-mono font-bold">Gem </p>
-              <p className="text-xl font-mono">A web client for Gemini AI</p>
-            </div>
+          <div className={`flex  w-full flex-col h-screen`} style={{ backgroundImage: `url(${bg.src})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+            {/* Class Blur */}
+            <div className={`flex w-full flex-col h-screen bg-black bg-opacity-10 shadow-lg backdrop-blur-20 `}>
+              {/* Fixed Heading */}
+              <div className="w-full p-10 flex flex-col items-center">
+                <p className={`${montserrat.className} text-8xl text-white `}>Gem </p>
+                <p className={`${poppins.className} text-xl text-gray-50`}>A web client for Gemini AI</p>
+              </div>
 
-            {/* Scrollable Chat */}
-            <div className="flex flex-col flex-grow overflow-y-auto px-96">
-              {messages.map((message, index) => (
+              {/* Scrollable Chat */}
+              <div className="flex flex-col flex-grow overflow-y-auto px-96">
+                {messages.map((message, index) => (
+<div className="flex flex-col">
+  {messages.map((message, index) => (
+    <div
+      key={`message-${index}`}
+      className={`flex ${message.type === "start" ? "items-start justify-start" : "items-end justify-end"
+        }`}
+    >
+      {message.type === "start" && (
+        <Avatar size="sm" name="avatar" src={userPic} />
+      )}
+
+      {message.type === "end" && (
+        <Avatar size="sm" name="avatar" className={`items-end`}>
+          💎
+        </Avatar>
+      )}
+      <div
+        className={`${
+          message.type === "start" ? "bg-gray-500" : "bg-gray-900"
+        } text-white p-5 max-w-1/2 rounded-3xl m-4`}
+      >
+        <div className="flex flex-col">{message.text}</div>
+      </div>
+
+    </div>
+  ))}
+</div>
+
+                ))}
+              </div>
+
+              {/* Fixed Input */}
+              <div className="flex justify-center my-10 p-5">
+                <input
+                  className="w-1/2 h-12 rounded-xl bg-gray-300"
+                  type="text"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter" || e.key === "Return") {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                />
                 <div
-                  key={`message-${index}`}
-                  className={`flex self-${message.type} ${
-                    message.type === "start" ? "bg-gray-500" : "bg-gray-900"
-                  }  text-white p-5 max-w-1/2 rounded-3xl m-4`}
+                  className="flex justify-center items-center ml-5"
+                  onClick={handleSendMessage}
                 >
-                  {message.type === "start" && (
-                    <Avatar size="sm" name="avatar" src={userPic} />
-                  )}
-                  <div className="flex flex-col">{message.text}</div>
-                  {message.type === "end" && (
-                    <Avatar size="sm" name="avatar">
-                      💎
-                    </Avatar>
+                  {isLoading ? (
+                    <Spinner size="sm" color="blue.500" />
+                  ) : (
+                    <FontAwesomeIcon icon={faPaperPlane} size="xl" />
                   )}
                 </div>
-              ))}
-            </div>
-
-            {/* Fixed Input */}
-            <div className="flex justify-center my-10 p-5">
-              <input
-                className="w-1/2 h-12 rounded-xl bg-gray-300"
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter" || e.key === "Return") {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-              />
-              <div
-            className="flex justify-center items-center ml-5"
-            onClick={handleSendMessage}
-          >
-            {isLoading ? (
-              <Spinner size="sm" color="blue.500" />
-            ) : (
-              <FontAwesomeIcon icon={faPaperPlane} size="xl" />
-            )}
-          </div>
+              </div>
             </div>
           </div>
         </NextUIProvider>
