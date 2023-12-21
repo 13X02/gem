@@ -17,8 +17,8 @@ import { ChakraProvider, Avatar } from "@chakra-ui/react";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Spinner } from "@chakra-ui/react";
-import bg from '../assets/bg_img.jpg';
 import {  Montserrat, Poppins } from 'next/font/google'
+import MessageBox from "./test/page";
 
 const montserrat = Montserrat({weight: "600", style: "normal", subsets: ['latin']})
 const poppins = Poppins({weight: "300", style: "normal", subsets: ['latin']})
@@ -70,6 +70,7 @@ export default function Home() {
     };
 
     try {
+      const sendTime = new Date().toLocaleTimeString();
       const response = await axios.post(
         "http://localhost:3000/api/prompt",
         requestData,
@@ -77,12 +78,23 @@ export default function Home() {
       );
 
       if (response.status === 200) {
+        const currentTime = new Date().toLocaleTimeString();
         const responseData = response.data;
         setIsLoading(false);
         setMessages([
           ...messages,
-          { text: inputMessage, type: "start" },
-          { text: responseData.response, type: "end" },
+          {
+            text: inputMessage,
+            type: "end",
+            name: "User",
+            time: sendTime,
+          },
+          {
+            text: responseData.response,
+            type: "start",
+            name: "Gemini",
+            time: currentTime,
+          },
         ]);
       } else {
         console.error("Error:", response.statusText);
@@ -144,48 +156,31 @@ export default function Home() {
           </Modal>
 
           {/* Chat UI */}
-          <div className={`flex  w-full flex-col h-screen`} style={{ backgroundImage: `url(${bg.src})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          <div className={`flex  w-full flex-col h-screen bg-white`} >
             {/* Class Blur */}
             <div className={`flex w-full flex-col h-screen bg-black bg-opacity-10 shadow-lg backdrop-blur-20 `}>
               {/* Fixed Heading */}
               <div className="w-full p-10 flex flex-col items-center">
-                <p className={`${montserrat.className} text-8xl text-white `}>Gem </p>
-                <p className={`${poppins.className} text-xl text-gray-50`}>A web client for Gemini AI</p>
+                <p className={`${montserrat.className} text-8xl text-black `}>Gem </p>
+                <p className={`${poppins.className} text-xl text-black-50`}>A web client for Gemini AI</p>
               </div>
 
               {/* Scrollable Chat */}
-              <div className="flex flex-col flex-grow overflow-y-auto px-96">
-                {messages.map((message, index) => (
-<div className="flex flex-col">
+              {/* Scrollable Chat */}
+<div className="flex flex-col flex-grow overflow-y-auto px-96">
   {messages.map((message, index) => (
-    <div
-      key={`message-${index}`}
-      className={`flex ${message.type === "start" ? "items-start justify-start" : "items-end justify-end"
-        }`}
-    >
-      {message.type === "start" && (
-        <Avatar size="sm" name="avatar" src={userPic} />
-      )}
-
-      {message.type === "end" && (
-        <Avatar size="sm" name="avatar" className={`items-end`}>
-          💎
-        </Avatar>
-      )}
-      <div
-        className={`${
-          message.type === "start" ? "bg-gray-500" : "bg-gray-900"
-        } text-white p-5 max-w-1/2 rounded-3xl m-4`}
-      >
-        <div className="flex flex-col">{message.text}</div>
-      </div>
-
-    </div>
+    <MessageBox
+      key={index}
+      message={message.text}
+      time={message.time}
+      type={message.type}
+      name={message.name}
+      className="max-w-1/2"
+    />
   ))}
 </div>
 
-                ))}
-              </div>
+
 
               {/* Fixed Input */}
               <div className="flex justify-center my-10 p-5">
