@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import {
   Modal,
@@ -14,14 +14,19 @@ import Cookies from "js-cookie";
 import { Link } from "@nextui-org/react";
 import axios from "axios";
 import { ChakraProvider, Avatar } from "@chakra-ui/react";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Spinner } from "@chakra-ui/react";
-import {  Montserrat, Poppins } from 'next/font/google'
+import { Montserrat, Poppins } from "next/font/google";
 import MessageBox from "./test/page";
+import { Rubik_Moonrocks } from "next/font/google";
 
-const montserrat = Montserrat({weight: "600", style: "normal", subsets: ['latin']})
-const poppins = Poppins({weight: "300", style: "normal", subsets: ['latin']})
+const montserrat = Rubik_Moonrocks({
+  weight: "400",
+  style: "normal",
+  subsets: ["latin"],
+});
+const poppins = Poppins({ weight: "300", style: "normal", subsets: ["latin"] });
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +76,7 @@ export default function Home() {
 
     try {
       const sendTime = new Date().toLocaleTimeString();
+
       const response = await axios.post(
         "http://localhost:3000/api/prompt",
         requestData,
@@ -104,6 +110,16 @@ export default function Home() {
     }
 
     setInputMessage("");
+  };
+  const gradientStyle = {
+    background:
+      "radial-gradient(circle at 100% 107%, #ff89cc 0%, #9cb8ec 30%, #00ffee 60%, #62c2fe 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent", // To make the text color transparent, revealing the gradient
+  };
+
+  const handleFileUpload = async () => {
+
   };
 
   return (
@@ -156,36 +172,47 @@ export default function Home() {
           </Modal>
 
           {/* Chat UI */}
-          <div className={`flex  w-full flex-col h-screen bg-white`} >
+          <div className={`flex w-full flex-col h-screen bg-custom-background`}>
             {/* Class Blur */}
-            <div className={`flex w-full flex-col h-screen bg-black bg-opacity-10 shadow-lg backdrop-blur-20 `}>
+            <div
+              className={`flex w-full flex-col h-screen bg-black bg-opacity-10 shadow-lg backdrop-blur-20 `}
+            >
               {/* Fixed Heading */}
-              <div className="w-full p-10 flex flex-col items-center">
-                <p className={`${montserrat.className} text-8xl text-black `}>Gem </p>
-                <p className={`${poppins.className} text-xl text-black-50`}>A web client for Gemini AI</p>
+              <div className="w-full px-96 pt-20 m-10 flex flex-col items-start">
+                <p
+                  className={`${poppins.className} text-7xl shadow-lg `}
+                  style={{ color: "#dddcf1", fontWeight: 1000 }}
+                >
+                  Gem<span style={gradientStyle}>AI</span>{" "}
+                </p>
+                <p
+                  className={`${poppins.className} text-xl `}
+                  style={{ color: "#9292a0" }}
+                >
+                  An Open Source Web Client for Gemini AI
+                </p>
               </div>
 
               {/* Scrollable Chat */}
               {/* Scrollable Chat */}
-<div className="flex flex-col flex-grow overflow-y-auto px-96">
-  {messages.map((message, index) => (
-    <MessageBox
-      key={index}
-      message={message.text}
-      time={message.time}
-      type={message.type}
-      name={message.name}
-      className="max-w-1/2"
-    />
-  ))}
-</div>
-
-
+              <div className="flex flex-col flex-grow overflow-y-auto py-10 px-96">
+                {messages.map((message, index) => (
+                  <MessageBox
+                    key={index}
+                    message={message.text}
+                    time={message.time}
+                    type={message.type}
+                    name={message.name}
+                    className="max-w-1/2"
+                  />
+                ))}
+              </div>
 
               {/* Fixed Input */}
               <div className="flex justify-center my-10 p-5">
                 <input
-                  className="w-1/2 h-12 rounded-xl bg-gray-300"
+                  className="w-1/2 h-12 p-4 rounded-xl"
+                  style={{ background: "#dddcf1", color: "#212028" }}
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
@@ -196,14 +223,25 @@ export default function Home() {
                     }
                   }}
                 />
+                
                 <div
                   className="flex justify-center items-center ml-5"
                   onClick={handleSendMessage}
                 >
+                  <FontAwesomeIcon icon={faImage} size="xl" color="#dddcf1" />
+                </div>
+                <div
+                  className="flex justify-center items-center ml-5"
+                  onClick={handleFileUpload}
+                >
                   {isLoading ? (
-                    <Spinner size="sm" color="blue.500" />
+                    <Spinner size="sm" color="#dddcf1" />
                   ) : (
-                    <FontAwesomeIcon icon={faPaperPlane} size="xl" />
+                    <FontAwesomeIcon
+                      icon={faPaperPlane}
+                      size="xl"
+                      color="#dddcf1"
+                    />
                   )}
                 </div>
               </div>

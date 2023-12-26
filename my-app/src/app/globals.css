@@ -1,4 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&family=Rubik+Doodle+Shadow&display=swap');
 
+/* In your stylesheet or Tailwind CSS configuration */
+@layer utilities {
+    .bg-custom-background {
+        background-color:#212028 ;
+      background-size: cover;
+      background-position: center;
+    }
+  }
+  
